@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  api_memcached:
+    container_name: api_memcached
+    restart: always
+    image: memcached:latest
+    ports:
+      - ${API_MEMCACHED_PORT}:11211
+    command:
+      - '--memory-limit=16384'
+
+  api_postgres:
+    container_name: api_postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=${API_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${API_POSTGRES_PASSWORD}
+    ports:
+      - ${API_POSTGRES_PORT}:5432
+    volumes:
+      - api_postgres:/var/lib/postgresql/data
+
+  api_redis:
+    container_name: api_redis
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - ${API_REDIS_PORT}:6379
+    command: redis-server --loglevel warning --requirepass ${API_REDIS_PASSWORD}
+    volumes:
+      - api_redis:/data
+
+  slug_postgres:
+    container_name: slug_postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=${SLUG_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${SLUG_POSTGRES_PASSWORD}
+    ports:
+      - ${SLUG_POSTGRES_PORT}:5432
+    volumes:
+      - slug_postgres:/var/lib/postgresql/data
+
+  slug_redis:
+    container_name: slug_redis
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - ${SLUG_REDIS_PORT}:6379
+    command: redis-server --loglevel warning --requirepass ${SLUG_REDIS_PASSWORD}
+    volumes:
+      - slug_redis:/data
+
+volumes:
+  api_postgres:
+  api_redis:
+
+  slug_postgres:
+  slug_redis:

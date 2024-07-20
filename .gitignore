@@ -1,0 +1,4 @@
+.env*
+andrey.*
+.venv
+__pycache__
