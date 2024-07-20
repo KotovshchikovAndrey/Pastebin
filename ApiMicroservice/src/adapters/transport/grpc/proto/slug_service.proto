@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+service SlugService {
+    rpc GetUniqueSlug(Void) returns (Slug);
+    rpc ReleaseSlug(Slug) returns (Void);
+}
+
+message Slug {
+    string slug = 1;
+}
+
+message Void {}

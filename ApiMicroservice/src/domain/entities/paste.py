@@ -25,11 +25,12 @@ class Paste(BaseEntity):
         if self.password is None:
             return True
 
-        return bcrypt.checkpw(password.encode(), hashed_password=self.password)
+        return bcrypt.checkpw(password.encode(), hashed_password=self.password.encode())
 
     def set_expiration(self, expiration: ExpirationEnum) -> None:
         if expiration == ExpirationEnum.NEVER:
             self.expired_at = None
+            return
 
         if expiration == ExpirationEnum.DROP_AFTER_READ:
             self.drop_after_read = True

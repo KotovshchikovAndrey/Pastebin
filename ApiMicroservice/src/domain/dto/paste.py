@@ -13,12 +13,6 @@ class CreatePasteDto:
 
 
 @dataclass(frozen=True, kw_only=True)
-class ReadPasteDto:
-    slug: str
-    password: str = field(default="")
-
-
-@dataclass(frozen=True, kw_only=True)
 class PasteDto:
     title: str
     text: str

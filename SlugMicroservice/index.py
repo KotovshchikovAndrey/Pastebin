@@ -1,4 +1,5 @@
 import asyncio
+from concurrent import futures
 import signal
 import asyncpg
 import grpc
@@ -25,7 +26,7 @@ async def run_server():
     slug_service = SlugService(database=database, cache=cache)
     slug_controller = SlugGrpcController(service=slug_service)
 
-    server = grpc.aio.server()
+    server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=1))
     slug_service_pb2_grpc.add_SlugServiceServicer_to_server(slug_controller, server)
     listen_addr = "[::]:50051"
     server.add_insecure_port(listen_addr)

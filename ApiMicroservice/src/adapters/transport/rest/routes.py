@@ -4,17 +4,17 @@ from config.ioc import container
 from fastapi import APIRouter, status
 from domain.services.paste import PasteService
 
-router = APIRouter(prefix="/paste")
+router = APIRouter(prefix="/pastes")
 
 
-@router.get(
-    path="/",
+@router.post(
+    path="/{slug:str}",
     status_code=status.HTTP_200_OK,
     response_model=schemas.ResponseSchema,
 )
-async def read_paste(schema: schemas.ReadPasteSchema):
+async def read_paste(slug: str, schema: schemas.ReadPasteSchema):
     paste_service = container.get(PasteService)
-    new_paste = await paste_service.read(schema.to_domain())
+    new_paste = await paste_service.read(slug=slug, password=schema.password)
 
     return {
         "message": "Paste read successfully",

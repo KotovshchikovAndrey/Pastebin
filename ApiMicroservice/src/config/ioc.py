@@ -4,6 +4,8 @@ from adapters.storage.memcached.cache import InMemoryCacheSystem
 from adapters.storage.memcached.connection import MemcachedConnection
 from adapters.storage.sql.connection import SqlDatabaseConnection
 from adapters.storage.sql.repositories.paste import PasteSqlRepository
+from adapters.transport.grpc.client import GrpcAsyncClient
+from adapters.transport.grpc.providers.slug import SlugGrpcProvider
 from config import settings
 
 from domain.ports.cache import ICacheSystem
@@ -43,7 +45,13 @@ class AdaptersProvider(injector.Module):
 
     @injector.singleton
     @injector.provider
-    def provide_slug_provider(self) -> ISlugProvider: ...
+    def provide_grpc_client(self) -> GrpcAsyncClient:
+        return GrpcAsyncClient(grpc_channel_address=settings.provider.slug_address)
+
+    @injector.singleton
+    @injector.provider
+    def provide_slug_provider(self, client: GrpcAsyncClient) -> ISlugProvider:
+        return SlugGrpcProvider(channel=client.channel)
 
 
 class DomainProvider(injector.Module):

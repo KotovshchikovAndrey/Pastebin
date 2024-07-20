@@ -39,7 +39,7 @@ def upgrade() -> None:
         sa.Column("title", sa.String(length=30), nullable=False),
         sa.Column("slug", sa.String(length=8), nullable=False),
         sa.Column("text", sa.Text(), nullable=False),
-        sa.Column("password", sa.String(length=50), nullable=True),
+        sa.Column("password", sa.String(length=255), nullable=True),
         sa.Column("expired_at", sa.DateTime(), nullable=True),
         sa.Column(
             "drop_after_read", sa.Boolean(), server_default="false", nullable=False

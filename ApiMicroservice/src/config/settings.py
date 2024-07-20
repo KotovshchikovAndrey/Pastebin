@@ -11,19 +11,23 @@ class ServerSettings(BaseModel):
     is_debug: bool = True
 
 
-class DatabaseSettings(BaseSettings):
+class DatabaseSettings(BaseModel):
     postgres_url: str
     echo: bool = True
 
 
-class CacheSettings(BaseSettings):
+class CacheSettings(BaseModel):
     memcached_host: str
     memcached_port: int
     ttl: int = 60 * 60 * 24  # 1 day
 
 
-class BackgroundSettings(BaseSettings):
+class BackgroundSettings(BaseModel):
     broker_url: str
+
+
+class ProviderSettings(BaseModel):
+    slug_address: str
 
 
 class AppSettings(BaseSettings):
@@ -39,3 +43,4 @@ class AppSettings(BaseSettings):
     database: DatabaseSettings
     cache: CacheSettings
     background: BackgroundSettings
+    provider: ProviderSettings

@@ -2,6 +2,8 @@ import asyncio
 from celery import shared_task
 from injector import NoScope
 
+from adapters.transport.grpc.client import GrpcAsyncClient
+from adapters.transport.grpc.providers.slug import SlugGrpcProvider
 from config import settings
 from config.ioc import container
 from adapters.storage.memcached.cache import InMemoryCacheSystem
@@ -34,8 +36,16 @@ async def delete_expired_pastes_async():
     sql_database = container.get(SqlDatabaseConnection, scope=NoScope)
     repository = PasteSqlRepository(sql_database)
 
-    await repository.delete_expired()
+    grpc = container.get(GrpcAsyncClient, scope=NoScope)
+    slug_provider = SlugGrpcProvider(grpc.channel)
+    released_slugs = await repository.delete_expired()
+
+    async with asyncio.TaskGroup() as tg:
+        for slug in released_slugs:
+            tg.create_task(slug_provider.release_slug(slug))
+
     await sql_database.close()
+    await grpc.close()
 
 
 @shared_task

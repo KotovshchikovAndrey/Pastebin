@@ -3,7 +3,11 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from domain.exceptions.base import DomainException
-from domain.exceptions.paste import InvalidPasswordException, PasteNotFoundException
+from domain.exceptions.paste import (
+    CategoryNotFoundException,
+    InvalidPasswordException,
+    PasteNotFoundException,
+)
 
 
 def handle_validation_exception(request: Request, exc: ValidationError):
@@ -34,7 +38,12 @@ def handle_domain_exception(request: Request, exc: DomainException):
         "detail": None,
     }
 
-    if isinstance(exc, PasteNotFoundException):
+    if any(
+        [
+            isinstance(exc, PasteNotFoundException),
+            isinstance(exc, CategoryNotFoundException),
+        ]
+    ):
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
             content=response_data,

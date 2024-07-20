@@ -1,15 +1,12 @@
 import typing as tp
 import asyncio
 
-from domain.dto.paste import CreatePasteDto, PasteDto, ReadPasteDto
+from domain.dto.paste import CreatePasteDto, PasteDto
 from domain.entities.paste import Paste
 from domain.exceptions.paste import InvalidPasswordException, PasteNotFoundException
 from domain.ports.cache import ICacheSystem
 from domain.ports.paste import IPasteRepository
-from domain.ports.slug import ISlugProvider
-
-
-Slug = tp.NewType("Slug", str)
+from domain.ports.slug import ISlugProvider, Slug
 
 
 class PasteService:
@@ -27,23 +24,24 @@ class PasteService:
         self._cache = cache
         self._slug = slug
 
-    async def read(self, dto: ReadPasteDto) -> PasteDto:
-        cached_paste = await self._cache.get(dto.slug)
+    async def read(self, slug: str, password: str | None = None) -> PasteDto:
+        cached_paste = await self._cache.get(slug)
         if cached_paste is not None:
             paste = Paste.model_validate_json(cached_paste)
         else:
-            paste = await self._repository.get_by_slug(dto.slug)
+            paste = await self._repository.get_by_slug(slug)
             if paste is None:
                 raise PasteNotFoundException()
 
         if paste.check_expired():
             raise PasteNotFoundException()
 
-        if not paste.check_password(dto.password):
+        if not paste.check_password(password or ""):
             raise InvalidPasswordException()
 
         if paste.drop_after_read:
             await self._repository.delete_by_slug(paste.slug)
+            await self._slug.release_slug(paste.slug)
 
         coro = self._repository.increment_views(paste.slug)
         asyncio.create_task(coro)
@@ -64,7 +62,7 @@ class PasteService:
             text=dto.text,
         )
 
-        new_paste.set_expiration(ttl=dto.expiration)
+        new_paste.set_expiration(expiration=dto.expiration)
         if dto.password is not None:
             new_paste.set_password(dto.password)
 
