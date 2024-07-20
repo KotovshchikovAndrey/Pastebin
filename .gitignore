@@ -2,3 +2,4 @@
 andrey.*
 .venv
 __pycache__
+celerybeat-schedule.*
