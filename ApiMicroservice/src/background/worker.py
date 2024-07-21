@@ -4,7 +4,7 @@ from datetime import timedelta
 
 from celery import Celery
 
-APP_PATH = pathlib.Path(".").joinpath("..", "..")
+APP_PATH = pathlib.Path(".").joinpath("..")
 sys.path.append(str(APP_PATH.absolute()))
 
 from config import settings
@@ -23,10 +23,12 @@ celery.conf.update(
         "cache-popular-pastes-every-day": {
             "task": "tasks.cache_popular_pastes",
             "schedule": timedelta(days=1),
+            # "schedule": timedelta(seconds=10),
         },
         "delete-expired-pastes-every-week": {
             "task": "tasks.delete_expired_pastes",
             "schedule": timedelta(weeks=1),
+            # "schedule": timedelta(seconds=10),
         },
     },
 )

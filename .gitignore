@@ -2,5 +2,5 @@
 andrey.*
 .venv
 __pycache__
-celerybeat-schedule.*
+celerybeat-schedule*
 .vscode

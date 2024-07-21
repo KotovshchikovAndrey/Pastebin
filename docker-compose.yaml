@@ -45,7 +45,7 @@ services:
     environment:
       - POSTGRES_USER=${SLUG_POSTGRES_USER}
       - POSTGRES_PASSWORD=${SLUG_POSTGRES_PASSWORD}
-    ports:
+    expose:
       - 5432
     volumes:
       - slug_postgres:/var/lib/postgresql/data
@@ -83,16 +83,25 @@ services:
       - PYTHONPATH=src
     env_file:
       - .env.api
+    volumes:
+      - ./ApiMicroservice/src:/app/src
 
-  # api_celery:
-  #   container_name: api_celery
-  #   build:
-  #     context: ./ApiMicroservice
-  #   command: [ "src/background/run.sh" ]
-  #   depends_on:
-  #     - api_microservice
-  #   networks:
-  #     - api_microservice
+  api_celery:
+    container_name: api_celery
+    build:
+      context: ./ApiMicroservice
+      dockerfile: Dockerfile
+    command: bash -c "cd /app && src/background/run.sh"
+    depends_on:
+      - api_microservice
+    networks:
+      - api_microservice
+    environment:
+      - PYTHONPATH=src
+    env_file:
+      - .env.api
+    volumes:
+      - ./ApiMicroservice/src:/app/src
 
   slug_microservice:
     container_name: slug_microservice
@@ -113,6 +122,8 @@ services:
       - PYTHONPATH=src
     env_file:
       - .env.slug
+    volumes:
+      - ./SlugMicroservice/src:/app/src
 
 volumes:
   api_postgres:
