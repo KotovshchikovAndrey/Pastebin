@@ -4,9 +4,6 @@ docker-compose --env-file .env.docker up -d
 
 sleep 5
 
-export SLUG_POSTGRES_DB
-export API_POSTGRES_DB
-
 docker exec -it slug_postgres psql -U postgres -c "CREATE DATABASE ${SLUG_POSTGRES_DB} WITH ENCODING 'utf-8';"
 
 docker exec -it slug_postgres psql -U postgres -d ${SLUG_POSTGRES_DB} -c "CREATE TABLE slug (id INT PRIMARY KEY GENERATED ALWAYS 

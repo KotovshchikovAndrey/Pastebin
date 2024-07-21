@@ -8,4 +8,4 @@ RUN pip install poetry
 
 COPY ./src ./src
 
-RUN poetry install --only main
+RUN poetry config virtualenvs.create false && poetry install --only main
