@@ -38,20 +38,22 @@ class PasteService:
         if not paste.check_password(dto.password):
             raise InvalidPasswordException()
 
-        if paste.drop_after_read:
-            await self._repository.delete_by_slug(paste.slug)
-            await self._slug.release_slug(paste.slug)
-
-        coro = self._repository.increment_views(paste.slug)
-        asyncio.create_task(coro)
-
-        return PasteDto(
+        output = PasteDto(
             category=paste.category,
             title=paste.title,
             text=paste.text,
             created_at=paste.created_at,
             expired_at=paste.expired_at,
         )
+
+        if paste.drop_after_read:
+            await self._repository.delete_by_slug(paste.slug)
+            await self._slug.release_slug(paste.slug)
+            return output
+
+        coro = self._repository.increment_views(paste.slug)
+        asyncio.create_task(coro)
+        return output
 
     async def create(self, dto: CreatePasteDto) -> Slug:
         new_paste = Paste(

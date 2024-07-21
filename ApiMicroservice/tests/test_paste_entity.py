@@ -14,7 +14,11 @@ class TestPasteEntity:
         ),
     )
     def test_create_paste_success(
-        self, slug: str, title: str, text: str, password: str | None
+        self,
+        slug: str,
+        title: str,
+        text: str,
+        password: str | None,
     ) -> None:
         paste = Paste(slug=slug, title=title, text=text)
         assert paste.slug == slug
