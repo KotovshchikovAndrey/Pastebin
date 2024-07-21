@@ -3,6 +3,7 @@ name = "slugmicroservice"
 version = "0.1.0"
 description = ""
 authors = ["Andrey <ykt_andrey@mail.ru>"]
+packages = [{ include = "src", from = "." }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -16,3 +17,6 @@ pydantic-settings = "^2.3.4"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+server = "src.index:main"

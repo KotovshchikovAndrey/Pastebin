@@ -1,7 +1,7 @@
 import typing as tp
 from datetime import UTC, datetime
-from sqlalchemy.sql import select, delete, update
 
+from sqlalchemy.sql import delete, select, update
 
 from adapters.storage.sql.connection import SqlDatabaseConnection
 from adapters.storage.sql.mappers.paste import PasteMapper

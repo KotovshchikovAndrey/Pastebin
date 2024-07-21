@@ -1,7 +1,8 @@
 from fastapi import Request, status
-from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
+
+from adapters.transport.rest.schemas import ErrorResponseSchema
 from domain.exceptions.base import DomainException
 from domain.exceptions.paste import (
     CategoryNotFoundException,
@@ -11,32 +12,23 @@ from domain.exceptions.paste import (
 
 
 def handle_validation_exception(request: Request, exc: ValidationError):
+    response = ErrorResponseSchema(message="Invalid request", detail=exc.errors())
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content=jsonable_encoder(
-            {
-                "message": "Invalid request!",
-                "detail": exc.errors(),
-            }
-        ),
+        content=response.model_dump(),
     )
 
 
 def handle_internal_exception(request: Request, exc: Exception):
+    response = ErrorResponseSchema(message="Internal server error")
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={
-            "message": "Внутренняя ошибка сервера!",
-            "detail": None,
-        },
+        content=response.model_dump(),
     )
 
 
 def handle_domain_exception(request: Request, exc: DomainException):
-    response_data = {
-        "message": exc.message,
-        "detail": None,
-    }
+    response = ErrorResponseSchema(message=exc.message)
 
     if any(
         [
@@ -46,11 +38,11 @@ def handle_domain_exception(request: Request, exc: DomainException):
     ):
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            content=response_data,
+            content=response.model_dump(),
         )
 
     if isinstance(exc, InvalidPasswordException):
         return JSONResponse(
             status_code=status.HTTP_403_FORBIDDEN,
-            content=response_data,
+            content=response.model_dump(),
         )

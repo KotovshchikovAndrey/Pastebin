@@ -1,19 +1,18 @@
 import asyncio
+
 import uvicorn
-
 from fastapi import FastAPI
-from pydantic import ValidationError
+from fastapi.exceptions import RequestValidationError
 
-from adapters.transport.rest import api_v1_router
 from adapters.storage.memcached.connection import MemcachedConnection
 from adapters.storage.sql.connection import SqlDatabaseConnection
 from adapters.transport.grpc.client import GrpcAsyncClient
+from adapters.transport.rest import api_v1_router
 from adapters.transport.rest.exception_handlers import (
     handle_domain_exception,
     handle_internal_exception,
     handle_validation_exception,
 )
-
 from config import settings
 from config.ioc import container
 from domain.exceptions.base import DomainException
@@ -36,7 +35,7 @@ async def shutdown():
 app = FastAPI(on_shutdown=[shutdown])
 app.include_router(api_v1_router, prefix="/api/v1")
 
-app.add_exception_handler(ValidationError, handle_validation_exception)
+app.add_exception_handler(RequestValidationError, handle_validation_exception)
 app.add_exception_handler(DomainException, handle_domain_exception)
 app.add_exception_handler(Exception, handle_internal_exception)
 

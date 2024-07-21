@@ -5,10 +5,12 @@ services:
     container_name: api_memcached
     restart: always
     image: memcached:latest
-    ports:
-      - ${API_MEMCACHED_PORT}:11211
+    expose:
+      - 11211
     command:
       - '--memory-limit=16384'
+    networks:
+      - api_microservice
 
   api_postgres:
     container_name: api_postgres
@@ -17,20 +19,24 @@ services:
     environment:
       - POSTGRES_USER=${API_POSTGRES_USER}
       - POSTGRES_PASSWORD=${API_POSTGRES_PASSWORD}
-    ports:
-      - ${API_POSTGRES_PORT}:5432
+    expose:
+      - 5432
     volumes:
       - api_postgres:/var/lib/postgresql/data
+    networks:
+      - api_microservice
 
   api_redis:
     container_name: api_redis
     image: redis:6.2-alpine
     restart: always
-    ports:
-      - ${API_REDIS_PORT}:6379
+    expose:
+      - 6379
     command: redis-server --loglevel warning --requirepass ${API_REDIS_PASSWORD}
     volumes:
       - api_redis:/data
+    networks:
+      - api_microservice
 
   slug_postgres:
     container_name: slug_postgres
@@ -40,19 +46,73 @@ services:
       - POSTGRES_USER=${SLUG_POSTGRES_USER}
       - POSTGRES_PASSWORD=${SLUG_POSTGRES_PASSWORD}
     ports:
-      - ${SLUG_POSTGRES_PORT}:5432
+      - 5432
     volumes:
       - slug_postgres:/var/lib/postgresql/data
+    networks:
+      - slug_microservice
 
   slug_redis:
     container_name: slug_redis
     image: redis:6.2-alpine
     restart: always
-    ports:
-      - ${SLUG_REDIS_PORT}:6379
+    expose:
+      - 6379
     command: redis-server --loglevel warning --requirepass ${SLUG_REDIS_PASSWORD}
     volumes:
       - slug_redis:/data
+    networks:
+      - slug_microservice
+
+  api_microservice:
+    container_name: api_microservice
+    build:
+      context: ./ApiMicroservice
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    command: bash -c "cd /app && poetry shell && alembic upgrade head && poetry run server"
+    depends_on:
+      - api_memcached
+      - api_postgres
+      - api_redis
+    networks:
+      - api_microservice
+      - shared
+    environment:
+      - PYTHONPATH=src
+    env_file:
+      - .env.api
+
+  # api_celery:
+  #   container_name: api_celery
+  #   build:
+  #     context: ./ApiMicroservice
+  #   command: [ "src/background/run.sh" ]
+  #   depends_on:
+  #     - api_microservice
+  #   networks:
+  #     - api_microservice
+
+  slug_microservice:
+    container_name: slug_microservice
+    build:
+      context: ./SlugMicroservice
+      dockerfile: Dockerfile
+    expose:
+      - 50051
+    command: [ "poetry", "run", "server" ]
+    depends_on:
+      - slug_redis
+      - slug_postgres
+      - api_microservice
+    networks:
+      - slug_microservice
+      - shared
+    environment:
+      - PYTHONPATH=src
+    env_file:
+      - .env.slug
 
 volumes:
   api_postgres:
@@ -60,3 +120,11 @@ volumes:
 
   slug_postgres:
   slug_redis:
+
+
+networks:
+  shared:
+  api_microservice:
+  slug_microservice:
+
+

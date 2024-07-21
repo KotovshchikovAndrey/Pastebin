@@ -3,7 +3,7 @@ BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 def encode_base62(number: int) -> str:
     if number < 0:
-        raise ValueError("Invalid number argument. Expected positive int")
+        raise ValueError("Invalid number argument. Expected the positive int")
 
     if number == 0:
         return "0"
@@ -19,7 +19,7 @@ def encode_base62(number: int) -> str:
 
 def decode_base62(string: str) -> int:
     if not string:
-        raise ValueError("Invalid string argument. Excpected NOT EMPTY string")
+        raise ValueError("Invalid string argument. Excpected the NOT EMPTY string")
 
     number = 0
     for index, char in enumerate(string[::-1]):

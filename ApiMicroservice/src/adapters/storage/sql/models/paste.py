@@ -1,6 +1,8 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Numeric, orm, String, Text
+
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Numeric, String, Text, orm
+
 from adapters.storage.sql.models.base import BaseModel
 
 

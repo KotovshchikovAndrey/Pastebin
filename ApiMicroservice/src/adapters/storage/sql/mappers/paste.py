@@ -1,4 +1,5 @@
 from datetime import UTC
+
 from adapters.storage.sql.models.paste import PasteModel
 from domain.entities.paste import Paste
 

@@ -7,7 +7,6 @@ from adapters.storage.sql.repositories.paste import PasteSqlRepository
 from adapters.transport.grpc.client import GrpcAsyncClient
 from adapters.transport.grpc.providers.slug import SlugGrpcProvider
 from config import settings
-
 from domain.ports.cache import ICacheSystem
 from domain.ports.paste import IPasteRepository
 from domain.ports.slug import ISlugProvider
@@ -51,7 +50,7 @@ class AdaptersProvider(injector.Module):
     @injector.singleton
     @injector.provider
     def provide_slug_provider(self, client: GrpcAsyncClient) -> ISlugProvider:
-        return SlugGrpcProvider(channel=client.channel)
+        return SlugGrpcProvider(client)
 
 
 class DomainProvider(injector.Module):

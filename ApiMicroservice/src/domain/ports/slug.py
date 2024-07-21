@@ -1,7 +1,6 @@
 import typing as tp
 from abc import abstractmethod
 
-
 Slug = tp.NewType("Slug", str)
 
 

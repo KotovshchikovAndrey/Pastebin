@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 import typing as tp
 from abc import abstractmethod
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True, kw_only=True)

@@ -1,15 +1,13 @@
-from datetime import timedelta
-from celery import Celery
-
-import sys
 import pathlib
+import sys
+from datetime import timedelta
 
+from celery import Celery
 
 APP_PATH = pathlib.Path(".").joinpath("..", "..")
 sys.path.append(str(APP_PATH.absolute()))
 
 from config import settings
-
 
 celery = Celery(
     __name__,

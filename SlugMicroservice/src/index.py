@@ -28,8 +28,7 @@ async def run_server():
 
     server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=1))
     slug_service_pb2_grpc.add_SlugServiceServicer_to_server(slug_controller, server)
-    listen_addr = "[::]:50051"
-    server.add_insecure_port(listen_addr)
+    server.add_insecure_port("0.0.0.0:50051")
     await server.start()
 
     shutdown = asyncio.Event()
@@ -50,5 +49,5 @@ async def run_server():
     print("Server close!")
 
 
-if __name__ == "__main__":
+def main():
     asyncio.run(run_server())

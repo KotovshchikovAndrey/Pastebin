@@ -1,4 +1,5 @@
 import typing as tp
+
 import annotated_types as at
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict

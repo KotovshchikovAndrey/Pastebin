@@ -15,6 +15,5 @@ class GrpcAsyncClient:
     async def close(self) -> None:
         await self._channel.close()
 
-    @property
-    def channel(self):
+    def get_channel(self):
         return self._channel

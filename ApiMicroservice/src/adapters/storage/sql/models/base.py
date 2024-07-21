@@ -1,7 +1,8 @@
-from datetime import datetime
 import uuid
+from datetime import datetime
+
+from sqlalchemy import DateTime, orm, text
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import orm, DateTime, text
 
 
 class BaseModel(orm.DeclarativeBase):

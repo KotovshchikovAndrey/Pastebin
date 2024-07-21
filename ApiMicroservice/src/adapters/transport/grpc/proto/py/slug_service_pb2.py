@@ -7,24 +7,25 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import symbol_database as _symbol_database
 from google.protobuf.internal import builder as _builder
+
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
 
 
-
-
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12slug_service.proto\"\x14\n\x04Slug\x12\x0c\n\x04slug\x18\x01 \x01(\t\"\x06\n\x04Void2I\n\x0bSlugService\x12\x1d\n\rGetUniqueSlug\x12\x05.Void\x1a\x05.Slug\x12\x1b\n\x0bReleaseSlug\x12\x05.Slug\x1a\x05.Voidb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n\x12slug_service.proto"\x14\n\x04Slug\x12\x0c\n\x04slug\x18\x01 \x01(\t"\x06\n\x04Void2I\n\x0bSlugService\x12\x1d\n\rGetUniqueSlug\x12\x05.Void\x1a\x05.Slug\x12\x1b\n\x0bReleaseSlug\x12\x05.Slug\x1a\x05.Voidb\x06proto3'
+)
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'slug_service_pb2', _globals)
+_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, "slug_service_pb2", _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
-  DESCRIPTOR._loaded_options = None
-  _globals['_SLUG']._serialized_start=22
-  _globals['_SLUG']._serialized_end=42
-  _globals['_VOID']._serialized_start=44
-  _globals['_VOID']._serialized_end=50
-  _globals['_SLUGSERVICE']._serialized_start=52
-  _globals['_SLUGSERVICE']._serialized_end=125
+    DESCRIPTOR._loaded_options = None
+    _globals["_SLUG"]._serialized_start = 22
+    _globals["_SLUG"]._serialized_end = 42
+    _globals["_VOID"]._serialized_start = 44
+    _globals["_VOID"]._serialized_end = 50
+    _globals["_SLUGSERVICE"]._serialized_start = 52
+    _globals["_SLUGSERVICE"]._serialized_end = 125
 # @@protoc_insertion_point(module_scope)

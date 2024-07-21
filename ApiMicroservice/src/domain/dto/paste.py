@@ -1,24 +1,29 @@
-from dataclasses import asdict, dataclass, field
+import typing as tp
 from datetime import datetime
+from dataclasses import dataclass, field
 from domain.config.enums import ExpirationEnum
+from domain.dto.base import BaseDto
 
 
-@dataclass(frozen=True, kw_only=True)
-class CreatePasteDto:
+@dataclass(kw_only=True, frozen=True)
+class ReadPasteDto(BaseDto):
+    slug: str
+    password: str | None = field(default=None)
+
+
+@dataclass(kw_only=True, frozen=True)
+class CreatePasteDto(BaseDto):
+    text: str
     title: str = field(default="Untitled")
+    expiration: ExpirationEnum = field(default=ExpirationEnum.NEVER)
     category: str | None = field(default=None)
     password: str | None = field(default=None)
-    expiration: ExpirationEnum = field(default=ExpirationEnum.NEVER)
-    text: str
 
 
-@dataclass(frozen=True, kw_only=True)
-class PasteDto:
+@dataclass(kw_only=True, frozen=True)
+class PasteDto(BaseDto):
     title: str
     text: str
     created_at: datetime
-    expired_at: datetime
-    category: str
-
-    def to_dict(self) -> dict:
-        return asdict(self)
+    expired_at: datetime | None = field(default=None)
+    category: str | None = field(default=None)

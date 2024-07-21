@@ -1,7 +1,6 @@
-import typing as tp
 import asyncio
 
-from domain.dto.paste import CreatePasteDto, PasteDto
+from domain.dto.paste import CreatePasteDto, PasteDto, ReadPasteDto
 from domain.entities.paste import Paste
 from domain.exceptions.paste import InvalidPasswordException, PasteNotFoundException
 from domain.ports.cache import ICacheSystem
@@ -24,19 +23,19 @@ class PasteService:
         self._cache = cache
         self._slug = slug
 
-    async def read(self, slug: str, password: str | None = None) -> PasteDto:
-        cached_paste = await self._cache.get(slug)
+    async def read(self, dto: ReadPasteDto) -> PasteDto:
+        cached_paste = await self._cache.get(dto.slug)
         if cached_paste is not None:
             paste = Paste.model_validate_json(cached_paste)
         else:
-            paste = await self._repository.get_by_slug(slug)
+            paste = await self._repository.get_by_slug(dto.slug)
             if paste is None:
                 raise PasteNotFoundException()
 
         if paste.check_expired():
             raise PasteNotFoundException()
 
-        if not paste.check_password(password or ""):
+        if not paste.check_password(dto.password):
             raise InvalidPasswordException()
 
         if paste.drop_after_read:
