@@ -1,6 +1,6 @@
 # Pastebin
 
-# Запуск
+## Запуск
 
 1. docker-compose --env-file <.env файл> up -d
 2. export SLUG_POSTGRES_DB=<название базы данных>
@@ -10,3 +10,6 @@
 AS IDENTITY, is_released BOOLEAN NOT NULL DEFAULT FALSE);"
 6. docker exec -it api_postgres psql -U postgres -c "CREATE DATABASE ${API_POSTGRES_DB} WITH ENCODING 'utf-8';"
 7. docker-compose --env-file .env.docker restart api_microservice slug_microservice
+
+![image](https://github.com/user-attachments/assets/38018d6f-d2f2-4a45-be4c-da7d37b67c6a)
+
