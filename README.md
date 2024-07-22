@@ -2,7 +2,7 @@
 
 ## Запуск
 
-1. docker-compose --env-file <.env файл> up -d
+1. docker-compose --env-file .env.docker up -d
 2. export SLUG_POSTGRES_DB=<название базы данных>
 3. export API_POSTGRES_DB=<название базы данных>
 4. docker exec -it slug_postgres psql -U postgres -c "CREATE DATABASE ${SLUG_POSTGRES_DB} WITH ENCODING 'utf-8';"
