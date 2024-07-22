@@ -9,11 +9,11 @@ from api.grpc import SlugGrpcController
 from proto.py import slug_service_pb2_grpc
 from services.slug import SlugService
 from settings import AppSettings
+from utils.cache import prepare_cache
 
 
 async def run_server():
     settings = AppSettings()
-
     cache = aioredis.from_url(settings.cache.redis_url)
     database: asyncpg.Connection = await asyncpg.connect(
         user=settings.database.postgres_username,
@@ -29,8 +29,9 @@ async def run_server():
     server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=1))
     slug_service_pb2_grpc.add_SlugServiceServicer_to_server(slug_controller, server)
     server.add_insecure_port("0.0.0.0:50051")
-    await server.start()
 
+    await prepare_cache(database=database, cache=cache)
+    await server.start()
     shutdown = asyncio.Event()
 
     def on_shutdown(*args, **kwargs):

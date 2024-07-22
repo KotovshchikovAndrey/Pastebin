@@ -33,6 +33,7 @@ class TestePasteService:
         valid_password: str,
     ) -> None:
         paste.set_password(valid_password)
+
         mock_repository.get_by_slug.return_value = paste
         mock_repository.increment_views.return_value = None
         mock_cache.get.return_value = None

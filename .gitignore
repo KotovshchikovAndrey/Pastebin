@@ -4,3 +4,6 @@ andrey.*
 __pycache__
 celerybeat-schedule*
 .vscode
+.pytest_cache
+build.sh
+init_databases.sh
